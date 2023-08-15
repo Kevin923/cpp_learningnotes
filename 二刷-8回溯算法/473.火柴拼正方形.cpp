@@ -7,7 +7,7 @@
 // @lc code=start
 class Solution {
 public:
-//和分割等和子集比较像 大家可以用回溯法，解决如下两题
+//和 416分割等和子集 比较像 大家可以用回溯法，解决如下两题
     bool makesquare(vector<int>& matchsticks) {
 
     }
