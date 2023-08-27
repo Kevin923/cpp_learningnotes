@@ -446,6 +446,44 @@ public:
     }
 };
 ```
+比如“abcdbaa”，索引从0开始。 我们容易得到，当 j = 4时，以s[4]结尾字符串sub[4] = “cdb”的 长度dp[4] =3。 接下来我们看 j +1的情况。根据定义，sub[4]字符串中的字符肯定不重复，所以当 j = 5时，这时距离字符s[5]的左侧的重复字符a的索引 i = 0， 也就是说s[ 0 ]在子字符串sub[ 4 ]之外了，以s[5]结尾的字符串自然在sub[4]的基础上加上字符s[5]就构成了新的最长的不重复的子串sub[5]，长度dp[5] = dp[4] + 1; 接下来我们继续看 j =6的情况，这时s[6]的左侧重复字符a的索引 i = 5，该重复字符在sub[ 5 ]中。新的最长不重复的字串sub[6]左边界以 i 结尾，长度dp[6] = j - i = 1。
+```C++
+class Solution {
+public:
+    //abcdeca 动规+哈希
+    int lengthOfLongestSubstring(string s) {
+        int len = s.size();
+        if(len == 0) return 0;
+        //dp[i]:以i结尾的最长不含重组字符的子字符串长度（最后一个字符一定是s[i]）
+        vector<int> dp(len, 0);
+        dp[0] = 1;
+        int res = 1;
+        unordered_map<char, int> umap;
+        //abcdbaa
+        umap[s[0]] = 0;
+        for(int i = 1; i < len; i++) {
+            //不含此字符
+            if (umap.find(s[i]) == umap.end()) {
+                dp[i] = dp[i - 1] + 1;
+            }
+            //abcdbaa 如此时i = 6 j = 5
+            else {
+                int j = umap[s[i]];
+                if (i - j <= dp[i - 1]) {
+                    dp[i] = i - j;
+                }
+                else {
+                    dp[i] = dp[i - 1] + 1;
+                }
+            }
+            umap[s[i]] = i;
+            res = max(res, dp[i]);
+            cout << res << endl;
+        }
+        return res;
+    }
+};
+```
 # **回溯与递归**
 
 ## **16.数值的整数次方**
@@ -836,3 +874,61 @@ public:
 ## **44.数字序列中某一位的数字**
 ![](2023-08-14-15-47-57.png)
 ![](2023-08-14-17-30-38.png)
+
+# **栈与队列**
+
+## **59.滑动窗口最大值**
+
+和代码随想录我写的版本不一样
+![](2023-08-24-21-45-11.png)
+```C++
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        if(k > nums.size() || k <= 0) return {};
+        deque<int> dq;
+        vector<int> res;
+        
+        //窗口未成形
+        //单调队列中的元素 队尾到队首 从小到大
+        //当元素到来时 如果到来的元素比队列头还大直接清空 只留下到来的元素在队列中，如果到来的元素 比队列末尾元素小 就加入队列
+        /*
+        [1 3 -1] -3 5 3 6 7 k = 3
+        front -> back
+        dq：1
+        dq：3
+        dq: 3 -1
+        dq: 3 -1 -3
+        dq: 5
+        dq: 5 3
+        dq: 6
+        dq: 7
+        */
+        for(int i = 0; i < k; i++) {
+            while(!dq.empty() && nums[i] > dq.back()) {
+                dq.pop_back();
+            }
+            dq.push_back(nums[i]);
+        }
+        res.push_back(dq.front());
+        //1 3 -1 -3 5 3 6 7
+        //0 1  2  3 4 5 6 7
+        for(int i = k; i < nums.size(); i++) {
+            
+            //i-k是已经在区间外了，如果首位等于nums[i-k]，那么说明此时首位值已经不再区间内了，需要删除
+            //例如i = 4时 此时到元素5 4 - k = 4 - 3 = 1 index为1 的元素为3 正好是最大值
+            //下面这句解释更好
+            //即如果当前最大的是即将要移除的左边界，那么要移除的左边界不允许放在deque 应该拿走
+            if(nums[i - k] == dq.front()) {
+                dq.pop_front(); //维持窗口大小始终为k 超过k了就要pop队列头
+            }
+            while(!dq.empty() && nums[i] > dq.back()) {
+                dq.pop_back();
+            }
+            dq.push_back(nums[i]);
+            res.push_back(dq.front());
+        }
+        return res;
+    }
+};
+```
