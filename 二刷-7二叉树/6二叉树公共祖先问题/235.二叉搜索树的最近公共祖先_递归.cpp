@@ -29,6 +29,13 @@ public:
 
         if(root->val < p->val && root->val < q->val){
             return lowestCommonAncestor(root->right, p, q);
+            /*
+            等价下面这种写法，本题其实就是递归搜索一条边的写法
+            有满足的条件直接返回
+            TreeNode* right = lowestCommonAncestor(root->right, p, q);
+            return right 
+            */
+
         }
         else if(root->val > p->val && root->val > q->val){
             return lowestCommonAncestor(root->left, p , q);

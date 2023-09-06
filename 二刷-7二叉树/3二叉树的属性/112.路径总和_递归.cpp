@@ -38,12 +38,20 @@ public:
 
         //单层递归逻辑
 
-        if(root->left){
+        if(root->left){// 左 （空节点不遍历）
             //如果叶子节点返回true，则直接返回true
             if(traversal(root->left, count - root->left->val)){
                 return true;
             }
         }
+        /*
+        也可以这么写 
+        if (cur->left) { // 左
+            count -= cur->left->val; // 递归，处理节点;
+            if (traversal(cur->left, count)) return true;
+            count += cur->left->val; // 回溯，撤销处理结果
+        }
+        */
 
         if(root->right){
             if(traversal(root->right, count - root->right->val)){
@@ -58,6 +66,18 @@ public:
     bool hasPathSum(TreeNode* root, int targetSum) {
         if(root == nullptr) return false;
         return hasPathSum(root, targetSum - root->val);
+    }
+};
+
+//精简版
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if (!root) return false;
+        if (!root->left && !root->right && sum == root->val) {
+            return true;
+        }
+        return hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val);
     }
 };
 // @lc code=end

@@ -33,6 +33,8 @@ public:
             4   3
                 /\ 
                6  5
+        最小深度是1-4 这条路径 即3  不是1  
+        深度是指根节点到最近的叶子节点之间的深度
     */
     int minDepth(TreeNode* root) {
         if(root == nullptr) return 0;

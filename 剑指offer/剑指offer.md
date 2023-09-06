@@ -610,11 +610,8 @@ public:
 
 小顶堆保存较大的一半
 
-保证小顶堆中的数字都大于大顶堆，并且小顶堆的数量与大顶堆相等，或者比大顶堆大1。
+保证小顶堆中的数字都大于大顶堆，并且小顶堆的数量与大顶堆相等，或者比大顶堆大1。当两个堆中个数相等时，向小顶堆中插入元素；不等时向大顶堆插入(反过来也行)；
 
-当两个堆中个数相等时，向大顶堆中插入元素；
-
-不等时向小顶堆插入；
 
 ```C++
 class MedianFinder {
@@ -631,6 +628,7 @@ public:
     priority_queue<int, vector<int>, greater<int>> minheap;//小顶堆
     priority_queue<int, vector<int>, less<int>> maxheap; //大顶堆
     void addNum(int num) {
+        //相等插入小顶堆，先插大顶把大的中的最小的再插入小顶堆
         if(minheap.size() == maxheap.size()) {
             maxheap.push(num);
             int top = maxheap.top();
@@ -757,7 +755,7 @@ public:
 };
 ```
 # **位运算**
-
+![](2023-09-02-14-28-08.png)
 ## **15.二进制中1的个数**
 ![](2023-08-08-12-43-20.png)
 ![](2023-08-08-12-44-27.png)
